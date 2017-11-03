@@ -8,12 +8,44 @@ use App\Perceptron;
 class PerceptronController extends Controller
 {
 
-}public function index(Request $request)
+public function index(Request $request)
 {
-    $datos=$request->input('datos');
+
     $bias=$request->input('bias');
-    $alfa=$request->input('alfa');
-    $entradas=array(0,0);
-    $salidas=array(0);
-    (new Perceptron($datos,$bias,$alfa))->train();
+    $numEntradas=$request->input('numEntradas');
+    $numDatos=$request->input('numDatos');
+    $numIteraciones=$request->input('numIteraciones');
+
+    $perceptron= new Perceptron($bias,$numEntradas,$numDatos,$numIteraciones);
+
+    //x1
+    $entradas[0][0]=0;
+    $entradas[0][1]=0;
+    $entradas[0][2]=1;
+    $entradas[0][3]=1;
+
+    //x2
+    $entradas[1][0]=0;
+    $entradas[1][1]=1;
+    $entradas[1][2]=0;
+    $entradas[1][3]=1;
+
+    //bias
+    $entradas[2][0]=$bias;
+    $entradas[2][1]=$bias;
+    $entradas[2][2]=$bias;
+    $entradas[2][3]=$bias;
+
+    //deseado
+    $entradas[3][0]=0;
+    $entradas[3][1]=0;
+    $entradas[3][2]=0;
+    $entradas[3][3]=1;
+
+    $salida=$perceptron->train($entradas);
+
+    foreach ($salida as $yk) {
+            echo $yk;
+        }
+    }
 }

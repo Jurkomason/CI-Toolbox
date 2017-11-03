@@ -2,10 +2,13 @@
 
 namespace App;
 
-class Perceptron
+use Illuminate\Database\Eloquent\Model;
+
+class Adaline extends Model
 {
-    protected $numEntradas;
+
     protected $bias;
+    protected $numEntradas;
     protected $numDatos;
     protected $weightVector;
     protected $numIterationes = 0;
@@ -16,9 +19,7 @@ class Perceptron
     {
         if ($numEntradas < 1) {
             throw new \InvalidArgumentException();
-        } /*elseif ($learningRate <= 0 || $learningRate > 1) {
-            throw new \InvalidArgumentException();
-        }*/
+        }
         $this->numEntradas = $numEntradas+2;
         $this->bias = $bias;
         $this->numIteraciones = $numIteraciones;
@@ -28,10 +29,11 @@ class Perceptron
             $this->weightVector[$i] = rand()/getrandmax() * 2 - 1;
         }
     }
+
     /**
      * @param array $entradas array of input signals
      * @param int  $outcome      1 = true / 0 = false
-     *
+     * @return array
      * @throws \InvalidArgumentException
      */
     public function train($entradas)
@@ -49,12 +51,7 @@ class Perceptron
                     a=a+$entradas[$k][$i]*($this->weightVector[$i]);
                 }
                 //se aplica la función de activación
-                if (a>=0){
-                    $yk=1;
-                }
-                else{
-                    $yk=0;
-                }
+                $yk=a;
 
                 $salida[$k]=$yk;
                 //se calcula el error y se acumula en el ecm
@@ -67,11 +64,14 @@ class Perceptron
                     $this->weightVector[$i]=$this->weightVector[$i]+($error*$entradas[$k][$i]);
                 }
             }
+
+            if ($ecm==0) {
+                $j=$numIteraciones;
+            }
         }
 
         return $salida;
     }
-
     /**
      * @return array
      */
@@ -110,7 +110,6 @@ class Perceptron
         }
         $this->bias = $bias;
     }
-
     /**
      * @param array $entradas
      *
